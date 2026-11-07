@@ -610,6 +610,14 @@ for c in ("Pstar", "evidence", "E2"):  # prose: with RF on all training flows, t
     for k in ("Fu", "Cn"):
         a = S6[c][f"{k}_minus_full"]; b = S6[c][f"{k}_minus_full_noemail"]
         assert a[1] < 0 < a[2] and b[2] < 0, (c, k, a, b)
+# v3.4 (fourth review): report the range of deep-minus-RF(validation flows restored) over suffix/evidence/E2 x {Fu, Cn}
+_all = [S6[c][f"{k}_minus_full"][0] for c in ("Pstar", "evidence", "E2") for k in ("Fu", "Cn")]
+_ne = [S6[c][f"{k}_minus_full_noemail"][0] for c in ("Pstar", "evidence", "E2") for k in ("Fu", "Cn")]
+assert max(_all) < 0 and max(_ne) < 0
+M("RFFullDeepAllNear", abs(max(_all)), "deep minus RF(validation flows restored), session splits, all classes: point closest to zero, absolute (pp; CIs all include zero)")
+M("RFFullDeepAllFar", abs(min(_all)), "same, point farthest from zero, absolute (pp)")
+M("RFFullDeepNENear", abs(max(_ne)), "same without the email term: point closest to zero, absolute (pp; CIs all exclude zero)")
+M("RFFullDeepNEFar", abs(min(_ne)), "same without the email term: point farthest from zero, absolute (pp)")
 for k, nm in (("Fu", "SFuFileFull"), ("Cn", "SCnFileFull")):
     pt, lo, hi = S6["no_session"][f"{k}_change_vs_flow_full"]; assert lo > 0, (k, pt, lo, hi)
     M(nm, pt, f"{k}: change of deep-minus-RF(all training flows), flow-random -> file-grouped (pp)")
