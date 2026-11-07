@@ -24,7 +24,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 PYTHON=.venv/bin/python ./reproduce.sh
 ```
 
-`reproduce.sh` runs the seven scripts in `analysis/` in order and writes their results to `outputs/`. It then compares
+`reproduce.sh` runs the eight scripts in `analysis/` in order and writes their results to `outputs/`. It then compares
 each file byte for byte with `expected/`, the files the paper was built from.
 
 | Script | What it checks or produces | Output |
@@ -34,6 +34,7 @@ each file byte for byte with `expected/`, the files the paper was built from.
 | `split_bug_effect.py` | How often the scikit-learn 1.1.3 splitter leaves a class without training data (Section 4 of the paper) | `split_bug.json` |
 | `check_g05.py` | Checks every final grouped run: split arrays equal the official splitter, each flow is tested once, every class has training data in every fold, metrics recompute from predictions, early-stopping prefixes are identical | `g05.json` (1814 checks) |
 | `check_leak.py` | The same checks for the flow-random runs | `leak_check.json` (105 checks) |
+| `check_g06.py` | Checks the RF rerun on all training flows (G06): same flows and test folds as the original runs, returned `fit_full` arrays equal their definition, metrics recompute, the environment reproduces a G05 run bit for bit; paired bootstrap differences; summary of the identical-frame timing measurements | `g06.json` (64 checks) |
 | `make_numbers.py` | All tables, macros, and bootstrap confidence intervals of the paper | `numbers.tex`, `tab_*.tex`, `ladder.csv`, `facts.json` |
 
 `numbers.tex` holds one LaTeX macro per number in the paper text, and `facts.json` states what each macro means.
@@ -44,13 +45,13 @@ E3 groups with 10,000 resamples and a fixed seed, so its intervals are reproduce
 
 ```
 manifest/   files.csv, sibling_pairs.csv, evidence_sessions.json, E2/E3_file_to_group.csv
-runs/G01..G05/
+runs/G01..G06/
             results/   per-flow predictions (*_predictions.csv.gz) and a run record (*.json) per run
             data/splits, results/*_splits.npz   train/validation/test indices
             audit/     row manifests, per-fold class coverage, near-duplicate exposure per test flow
 analysis/   the scripts above (paths relative to the repository root)
 expected/   the outputs used to build the paper
-records/    the audit and G05 rules (Chinese originals), the G05 protocol, environment and package versions
+records/    the audit, G05 and G06 rules (Chinese originals), the G05 protocol, G06 split checks, environment and package versions
 pipeline/   the server-side scripts that extracted flows, ran the audit and trained the models (for inspection only;
             they need the raw ISCXVPN2016 captures and the local configuration, which are not included)
 ```
@@ -63,7 +64,7 @@ pipeline/   the server-side scripts that extracted flows, ran the audit and trai
 - `in_9class_task`, `flows_9class_task`: whether the file is in the nine-class task, and how many flows it contributes after cleaning;
 - `suffix_session`: file stem without one trailing `a`/`b`/`A`/`B` (and a preceding underscore);
 - `evidence_session`: suffix sessions merged along *confirmed* pairs;
-- `E2_group`, `E3_group`: the broader merges of the sensitivity analysis;
+- `E2_group`, `E3_group`: the broader merges of the sensitivity analysis (fixed after the main results were seen, so post hoc; if you use them as session definitions in new work, treat them as one more conservative candidate, not as ground truth);
 - the remaining columns: per-file sums of the pair evidence.
 
 `manifest/sibling_pairs.csv` has one row per candidate pair (130 pairs). Columns:
@@ -87,6 +88,8 @@ row indices into the flow table of the condition:
   refer to the rows of `runs/G05/audit/{condition}_row_manifest.csv.gz` (columns `flow_id, file, session, true_label`).
 - **Flow-random splits**: `runs/G01/results/v3/B_baseline_leak_multi_RF_seq_iat_{seed}_splits.npz` (identical arrays
   for all models; `check_leak.py` verifies this). The indices refer to the rows of the matching predictions file.
+- **RF on all training flows** (G06): `runs/G06/data/splits/G06_{condition}_{seed}_fitfull_splits.npz` with the arrays
+  `fold{k}_fit_full` and `fold{k}_test`; the test arrays are those of the original run of the same condition and seed.
 
 Condition names used in file names:
 
@@ -151,6 +154,7 @@ that its split arrays equal those of the official 1.9.1 splitter.
 | G05 | All grouped results in the paper |
 | G01 / G02 `leak` | Flow-random results (StratifiedKFold, not affected by the defect) |
 | G01, G03, G04 grouped | Superseded; included only for the old-splitter comparison in the paper and for the consistency checks |
+| G06 | Added after a third review: RF retrained on all training flows of each fold (validation sessions included; Section 5.3), and timing and container metadata of the identical frames in the 13 sibling pairs (`runs/G06/audit/packet_pairs/`; Section 3) |
 
 ### Records
 
@@ -161,6 +165,8 @@ The heading "预注册" means the rules were fixed in advance and recorded inter
 third-party registry.
 
 `records/G05_RULES.md` and `records/G05_protocol.json` describe the corrected rerun. They were fixed before training.
+`records/G06_RULES.md` and `records/G06_expected_fit_full_hashes.json` were fixed before the G06 runs; G06 itself was
+added after the G05 results and a third external review had been seen.
 
 ## Data source
 

@@ -8,7 +8,7 @@ export ARTEFACT_ROOT="$PWD"
 PY="${PYTHON:-python3}"
 "$PY" -I -c "import numpy, sklearn, sys; print('python', sys.version.split()[0], 'numpy', numpy.__version__, 'scikit-learn', sklearn.__version__)"
 rm -rf outputs && mkdir outputs
-for s in fixed_split_plan check_g03 check_g04 split_bug_effect check_g05 check_leak make_numbers; do
+for s in fixed_split_plan check_g03 check_g04 split_bug_effect check_g05 check_leak check_g06 make_numbers; do
   echo "== analysis/$s.py"
   "$PY" -I "analysis/$s.py" | tail -n 1
 done
