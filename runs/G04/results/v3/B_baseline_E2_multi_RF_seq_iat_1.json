@@ -1,0 +1,939 @@
+{
+  "job": {
+    "id": "B_baseline_E2_multi_RF_seq_iat_1",
+    "condition": "E2",
+    "seed": 1,
+    "model": "RF_seq_iat",
+    "kind": "baseline",
+    "task": "multi",
+    "repair_r": 1,
+    "split_file": "data/splits/G04_E2_1_splits.npz",
+    "split_sha256": "6eb5b0bac77b238f8d6a8aa2e5be155eeb07f8542f4a370aa204cef15d70dc24",
+    "max_epochs": 300,
+    "patience": null,
+    "reference_task": "G03",
+    "reference_file": "results/v3/B_baseline_E2_multi_RF_seq_iat_1.json",
+    "reference_sha256": "f4df28652726423b6adc2b1af18faa1767d08b7a2b329988db5e882f53047d9a"
+  },
+  "status": "completed",
+  "post_G01_G02_G03_correction": true,
+  "rules_fixed_before_training": true,
+  "classes": [
+    "chat",
+    "email",
+    "file_transfer",
+    "streaming",
+    "voip",
+    "vpn_chat",
+    "vpn_file_transfer",
+    "vpn_streaming",
+    "vpn_voip"
+  ],
+  "n_flows": 7371,
+  "metrics": {
+    "macro_f1": 0.25135106047319317,
+    "accuracy": 0.35422602089268757,
+    "confusion_matrix": [
+      [
+        134,
+        0,
+        15,
+        1,
+        314,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        21,
+        0,
+        4,
+        2,
+        237,
+        0,
+        16,
+        0,
+        0
+      ],
+      [
+        23,
+        1,
+        109,
+        191,
+        1153,
+        10,
+        7,
+        11,
+        363
+      ],
+      [
+        1,
+        0,
+        100,
+        602,
+        183,
+        1,
+        0,
+        1,
+        118
+      ],
+      [
+        136,
+        0,
+        113,
+        142,
+        1440,
+        1,
+        10,
+        4,
+        78
+      ],
+      [
+        2,
+        1,
+        7,
+        8,
+        69,
+        35,
+        49,
+        24,
+        5
+      ],
+      [
+        10,
+        7,
+        39,
+        0,
+        135,
+        40,
+        7,
+        240,
+        6
+      ],
+      [
+        15,
+        0,
+        19,
+        74,
+        43,
+        1,
+        72,
+        256,
+        1
+      ],
+      [
+        16,
+        7,
+        68,
+        200,
+        309,
+        4,
+        29,
+        1,
+        28
+      ]
+    ],
+    "per_class": [
+      {
+        "class": "chat",
+        "precision": 0.3743016759776536,
+        "recall": 0.2875536480686695,
+        "f1": 0.3252427184466019,
+        "support": 466
+      },
+      {
+        "class": "email",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 280
+      },
+      {
+        "class": "file_transfer",
+        "precision": 0.229957805907173,
+        "recall": 0.05835117773019272,
+        "f1": 0.09308283518360376,
+        "support": 1868
+      },
+      {
+        "class": "streaming",
+        "precision": 0.4934426229508197,
+        "recall": 0.5984095427435387,
+        "f1": 0.5408805031446541,
+        "support": 1006
+      },
+      {
+        "class": "voip",
+        "precision": 0.37084728302858616,
+        "recall": 0.7484407484407485,
+        "f1": 0.4959531599793353,
+        "support": 1924
+      },
+      {
+        "class": "vpn_chat",
+        "precision": 0.3763440860215054,
+        "recall": 0.175,
+        "f1": 0.23890784982935157,
+        "support": 200
+      },
+      {
+        "class": "vpn_file_transfer",
+        "precision": 0.03684210526315789,
+        "recall": 0.014462809917355372,
+        "f1": 0.02077151335311573,
+        "support": 484
+      },
+      {
+        "class": "vpn_streaming",
+        "precision": 0.4767225325884544,
+        "recall": 0.5322245322245323,
+        "f1": 0.5029469548133596,
+        "support": 481
+      },
+      {
+        "class": "vpn_voip",
+        "precision": 0.04666666666666667,
+        "recall": 0.04229607250755287,
+        "f1": 0.04437400950871632,
+        "support": 662
+      }
+    ]
+  },
+  "fold_details": [
+    {
+      "fold": 0,
+      "n_fit": 3928,
+      "n_validation": 911,
+      "n_test": 1203,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 1,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 1,
+      "n_fit": 4327,
+      "n_validation": 628,
+      "n_test": 1537,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 10008,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 2,
+      "n_fit": 4729,
+      "n_validation": 539,
+      "n_test": 1245,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 20015,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 3,
+      "n_fit": 4157,
+      "n_validation": 1057,
+      "n_test": 802,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 30022,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 4,
+      "n_fit": 3361,
+      "n_validation": 1016,
+      "n_test": 2584,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 40029,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    }
+  ],
+  "protocol_sha256": "c539f9d0a884b0336d6959d76c1c6847c2e9f65cf199b1521ae88e9a06d684de",
+  "split_sha256": "6eb5b0bac77b238f8d6a8aa2e5be155eeb07f8542f4a370aa204cef15d70dc24",
+  "metric_aggregation": "merged five-fold OOF predictions",
+  "tie_break_epoch": "first maximum",
+  "training_pool_reused_verbatim": true,
+  "resumed_completed_folds": [],
+  "grouping": "E2",
+  "split_audit": [
+    {
+      "fold": 0,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 338,
+          "fit_groups": 10,
+          "validation_flows": 11,
+          "validation_groups": 1,
+          "test_flows": 117,
+          "test_groups": 5,
+          "outer_train_flows": 349,
+          "outer_train_groups": 11
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 69,
+          "fit_groups": 1,
+          "validation_flows": 211,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 280,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 13,
+          "validation_flows": 1,
+          "validation_groups": 1,
+          "test_flows": 179,
+          "test_groups": 4,
+          "outer_train_flows": 1689,
+          "outer_train_groups": 16
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 547,
+          "fit_groups": 7,
+          "validation_flows": 6,
+          "validation_groups": 1,
+          "test_flows": 453,
+          "test_groups": 2,
+          "outer_train_flows": 553,
+          "outer_train_groups": 8
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 17,
+          "validation_flows": 117,
+          "validation_groups": 1,
+          "test_flows": 166,
+          "test_groups": 2,
+          "outer_train_flows": 1758,
+          "outer_train_groups": 18
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 141,
+          "fit_groups": 4,
+          "validation_flows": 59,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 200,
+          "outer_train_groups": 5
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 127,
+          "fit_groups": 2,
+          "validation_flows": 357,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 484,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 86,
+          "fit_groups": 1,
+          "validation_flows": 107,
+          "validation_groups": 1,
+          "test_flows": 288,
+          "test_groups": 2,
+          "outer_train_flows": 193,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 620,
+          "fit_groups": 3,
+          "validation_flows": 42,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 662,
+          "outer_train_groups": 4
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            3928
+          ],
+          "sha256": "b6362e4ae174b4b4640550df9d144cfc85bf1f04df6675848cef7b5731720055"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            911
+          ],
+          "sha256": "49f63a62ed507a8f27330fb8beb596c03a49dae29cc0b5ca8c4419f3b045c55b"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1203
+          ],
+          "sha256": "bfad5571a44e8b8e203f5ff3e78dd2d794edf84501dc7c8d87ea14409770f6db"
+        }
+      }
+    },
+    {
+      "fold": 1,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 388,
+          "fit_groups": 13,
+          "validation_flows": 45,
+          "validation_groups": 1,
+          "test_flows": 33,
+          "test_groups": 2,
+          "outer_train_flows": 433,
+          "outer_train_groups": 14
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 69,
+          "fit_groups": 1,
+          "validation_flows": 0,
+          "validation_groups": 0,
+          "test_flows": 211,
+          "test_groups": 1,
+          "outer_train_flows": 69,
+          "outer_train_groups": 1
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 11,
+          "validation_flows": 50,
+          "validation_groups": 1,
+          "test_flows": 212,
+          "test_groups": 5,
+          "outer_train_flows": 1656,
+          "outer_train_groups": 15
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 908,
+          "fit_groups": 9,
+          "validation_flows": 98,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 1006,
+          "outer_train_groups": 10
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 14,
+          "validation_flows": 104,
+          "validation_groups": 1,
+          "test_flows": 547,
+          "test_groups": 5,
+          "outer_train_flows": 1377,
+          "outer_train_groups": 15
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 59,
+          "fit_groups": 1,
+          "validation_flows": 27,
+          "validation_groups": 1,
+          "test_flows": 114,
+          "test_groups": 3,
+          "outer_train_flows": 86,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 466,
+          "fit_groups": 2,
+          "validation_flows": 18,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 484,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 395,
+          "fit_groups": 3,
+          "validation_flows": 86,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 481,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 42,
+          "fit_groups": 1,
+          "validation_flows": 200,
+          "validation_groups": 1,
+          "test_flows": 420,
+          "test_groups": 2,
+          "outer_train_flows": 242,
+          "outer_train_groups": 2
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4327
+          ],
+          "sha256": "177921328ecff12fd362d4506cfd87d12b4eae6d03795554737a2a9b12f4dfcd"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            628
+          ],
+          "sha256": "d1882a3a54d159f143c8a13bcc13c9a321cfe3234ae742a964959de2b269fe27"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1537
+          ],
+          "sha256": "c1c03c82b29e8b2e75e196cc228086c7949fb7bd5ad4c00aa713b410bdf46eea"
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 408,
+          "fit_groups": 14,
+          "validation_flows": 46,
+          "validation_groups": 1,
+          "test_flows": 12,
+          "test_groups": 1,
+          "outer_train_flows": 454,
+          "outer_train_groups": 15
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 211,
+          "fit_groups": 1,
+          "validation_flows": 0,
+          "validation_groups": 0,
+          "test_flows": 69,
+          "test_groups": 1,
+          "outer_train_flows": 211,
+          "outer_train_groups": 1
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 13,
+          "validation_flows": 1,
+          "validation_groups": 1,
+          "test_flows": 103,
+          "test_groups": 3,
+          "outer_train_flows": 1765,
+          "outer_train_groups": 17
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 923,
+          "fit_groups": 8,
+          "validation_flows": 77,
+          "validation_groups": 1,
+          "test_flows": 6,
+          "test_groups": 1,
+          "outer_train_flows": 1000,
+          "outer_train_groups": 9
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 12,
+          "validation_flows": 82,
+          "validation_groups": 1,
+          "test_flows": 748,
+          "test_groups": 7,
+          "outer_train_flows": 1176,
+          "outer_train_groups": 13
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 104,
+          "fit_groups": 4,
+          "validation_flows": 96,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 200,
+          "outer_train_groups": 5
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 375,
+          "fit_groups": 2,
+          "validation_flows": 109,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 484,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 288,
+          "fit_groups": 2,
+          "validation_flows": 86,
+          "validation_groups": 1,
+          "test_flows": 107,
+          "test_groups": 1,
+          "outer_train_flows": 374,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 420,
+          "fit_groups": 2,
+          "validation_flows": 42,
+          "validation_groups": 1,
+          "test_flows": 200,
+          "test_groups": 1,
+          "outer_train_flows": 462,
+          "outer_train_groups": 3
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4729
+          ],
+          "sha256": "035f15f6d3ba265d4cfca377b5ae04e6116b133aa5decdd0cc4ab61522fc17ad"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            539
+          ],
+          "sha256": "347e2ee35bdbe1d6baa3a85e77c473fcacd6caafce0f6f8d70a07d31b38a7783"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1245
+          ],
+          "sha256": "00930c1f7cccac94e127d1e12fd69eca5c1fa79df538b175969da7401a635cf3"
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 422,
+          "fit_groups": 13,
+          "validation_flows": 23,
+          "validation_groups": 1,
+          "test_flows": 21,
+          "test_groups": 2,
+          "outer_train_flows": 445,
+          "outer_train_groups": 14
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 211,
+          "fit_groups": 1,
+          "validation_flows": 69,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 280,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 13,
+          "validation_flows": 22,
+          "validation_groups": 1,
+          "test_flows": 112,
+          "test_groups": 3,
+          "outer_train_flows": 1756,
+          "outer_train_groups": 17
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 513,
+          "fit_groups": 6,
+          "validation_flows": 224,
+          "validation_groups": 1,
+          "test_flows": 269,
+          "test_groups": 3,
+          "outer_train_flows": 737,
+          "outer_train_groups": 7
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 17,
+          "validation_flows": 113,
+          "validation_groups": 1,
+          "test_flows": 190,
+          "test_groups": 2,
+          "outer_train_flows": 1734,
+          "outer_train_groups": 18
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 132,
+          "fit_groups": 3,
+          "validation_flows": 9,
+          "validation_groups": 1,
+          "test_flows": 59,
+          "test_groups": 1,
+          "outer_train_flows": 141,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 18,
+          "fit_groups": 1,
+          "validation_flows": 357,
+          "validation_groups": 1,
+          "test_flows": 109,
+          "test_groups": 1,
+          "outer_train_flows": 375,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 374,
+          "fit_groups": 3,
+          "validation_flows": 107,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 481,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 487,
+          "fit_groups": 2,
+          "validation_flows": 133,
+          "validation_groups": 1,
+          "test_flows": 42,
+          "test_groups": 1,
+          "outer_train_flows": 620,
+          "outer_train_groups": 3
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4157
+          ],
+          "sha256": "27964c51bd71dd202e5b88a2f8eb14ea4254af1ca309c0cb8c954d71ed755b06"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            1057
+          ],
+          "sha256": "244fc3b19a21f810fcec3138079379a050f79d67076b61608ac68f9f09152ed5"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            802
+          ],
+          "sha256": "858d1a59960f821fbc34c87130611a83780aa87cbe8cbbd4478e92ca15a3c53e"
+        }
+      }
+    },
+    {
+      "fold": 4,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 175,
+          "fit_groups": 9,
+          "validation_flows": 8,
+          "validation_groups": 1,
+          "test_flows": 283,
+          "test_groups": 6,
+          "outer_train_flows": 183,
+          "outer_train_groups": 10
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 211,
+          "fit_groups": 1,
+          "validation_flows": 69,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 280,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 527,
+          "fit_groups": 14,
+          "validation_flows": 79,
+          "validation_groups": 1,
+          "test_flows": 1262,
+          "test_groups": 5,
+          "outer_train_flows": 606,
+          "outer_train_groups": 15
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 499,
+          "fit_groups": 5,
+          "validation_flows": 229,
+          "validation_groups": 1,
+          "test_flows": 278,
+          "test_groups": 4,
+          "outer_train_flows": 728,
+          "outer_train_groups": 6
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 15,
+          "validation_flows": 241,
+          "validation_groups": 1,
+          "test_flows": 273,
+          "test_groups": 4,
+          "outer_train_flows": 1651,
+          "outer_train_groups": 16
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 114,
+          "fit_groups": 3,
+          "validation_flows": 59,
+          "validation_groups": 1,
+          "test_flows": 27,
+          "test_groups": 1,
+          "outer_train_flows": 173,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 109,
+          "fit_groups": 1,
+          "validation_flows": 0,
+          "validation_groups": 0,
+          "test_flows": 375,
+          "test_groups": 2,
+          "outer_train_flows": 109,
+          "outer_train_groups": 1
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 264,
+          "fit_groups": 2,
+          "validation_flows": 131,
+          "validation_groups": 1,
+          "test_flows": 86,
+          "test_groups": 1,
+          "outer_train_flows": 395,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 462,
+          "fit_groups": 3,
+          "validation_flows": 200,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 662,
+          "outer_train_groups": 4
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            3361
+          ],
+          "sha256": "a4503f73b6218b710b74e0ec78c82fbca8fd34289a2cbd7328c295154aa6ba8e"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            1016
+          ],
+          "sha256": "a115ba8e288cad88b19834b7496e142582129f04c4a8c5a9d7b4fca5799a6ef6"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            2584
+          ],
+          "sha256": "6c15c3c568e04f771dd8cb438eeba52410afdd629f327e4a0c2c543b6429f1d9"
+        }
+      }
+    }
+  ]
+}

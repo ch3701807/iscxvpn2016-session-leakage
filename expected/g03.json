@@ -1,0 +1,238 @@
+{
+ "checks": {
+  "E2 partition equals local rebuild": true,
+  "E2 group names follow G01 rule": true,
+  "E3 partition equals local rebuild": true,
+  "E3 group names follow G01 rule": true,
+  "E2 seed 1: flow set = P* flow set": true,
+  "E2 seed 1: labels match P*": true,
+  "E2 seed 1: session column = E2 group of file": true,
+  "E2 seed 1: same folds for RF, 8, 11": true,
+  "E2 seed 1: no group in two test folds": true,
+  "E2 seed 1: every flow tested exactly once (npz)": true,
+  "E2 seed 7: flow set = P* flow set": true,
+  "E2 seed 7: labels match P*": true,
+  "E2 seed 7: session column = E2 group of file": true,
+  "E2 seed 7: same folds for RF, 8, 11": true,
+  "E2 seed 7: no group in two test folds": true,
+  "E2 seed 7: every flow tested exactly once (npz)": true,
+  "E2 seed 42: flow set = P* flow set": true,
+  "E2 seed 42: labels match P*": true,
+  "E2 seed 42: session column = E2 group of file": true,
+  "E2 seed 42: same folds for RF, 8, 11": true,
+  "E2 seed 42: no group in two test folds": true,
+  "E2 seed 42: every flow tested exactly once (npz)": true,
+  "E2 deep: selected = first max, stop = 30 epochs without strict improvement (30 folds)": true,
+  "B: P*_8 flow set = P* minus vpn_streaming": true,
+  "B seed 1: E3_8 same flows as P*_8": true,
+  "B seed 1: P*_8 session = suffix session": true,
+  "B seed 1: E3_8 session = E3 group": true,
+  "B seed 7: E3_8 same flows as P*_8": true,
+  "B seed 7: P*_8 session = suffix session": true,
+  "B seed 7: E3_8 session = E3 group": true,
+  "B seed 42: E3_8 same flows as P*_8": true,
+  "B seed 42: P*_8 session = suffix session": true,
+  "B seed 42: E3_8 session = E3 group": true
+ },
+ "E2": {
+  "groups": 86,
+  "cross_class": 0,
+  "per_class": {
+   "chat": 16,
+   "email": 2,
+   "file_transfer": 20,
+   "streaming": 10,
+   "voip": 20,
+   "vpn_chat": 5,
+   "vpn_file_transfer": 3,
+   "vpn_streaming": 4,
+   "vpn_voip": 4
+  }
+ },
+ "E3": {
+  "groups": 63,
+  "cross_class": 0,
+  "per_class": {
+   "chat": 12,
+   "email": 2,
+   "file_transfer": 17,
+   "streaming": 2,
+   "voip": 16,
+   "vpn_chat": 4,
+   "vpn_file_transfer": 3,
+   "vpn_streaming": 1,
+   "vpn_voip": 4
+  }
+ },
+ "E2_epochs": {
+  "sel_median": 105.5,
+  "sel_max": 196,
+  "stop_max": 226,
+  "capped": 0,
+  "folds": 30
+ },
+ "E2_metrics": {
+  "RF": {
+   "mF1": 26.2,
+   "mF1_sd_ddof1": 2.13,
+   "mF1_sd_ddof0": 1.74,
+   "acc": 35.68,
+   "per_seed": [
+    26.17,
+    28.34,
+    24.09
+   ],
+   "minus_Pstar": [
+    -2.6,
+    -5.6,
+    0.28
+   ],
+   "minus_evidence": [
+    -1.59,
+    -4.65,
+    0.91
+   ]
+  },
+  "8": {
+   "mF1": 25.08,
+   "mF1_sd_ddof1": 5.43,
+   "mF1_sd_ddof0": 4.44,
+   "acc": 29.4,
+   "per_seed": [
+    18.83,
+    27.77,
+    28.66
+   ],
+   "minus_Pstar": [
+    -3.23,
+    -6.13,
+    0.25
+   ],
+   "minus_evidence": [
+    1.67,
+    -1.67,
+    3.13
+   ]
+  },
+  "11": {
+   "mF1": 25.62,
+   "mF1_sd_ddof1": 4.19,
+   "mF1_sd_ddof0": 3.42,
+   "acc": 31.7,
+   "per_seed": [
+    22.22,
+    30.29,
+    24.34
+   ],
+   "minus_Pstar": [
+    -3.95,
+    -6.96,
+    -0.15
+   ],
+   "minus_evidence": [
+    -2.58,
+    -5.44,
+    0.75
+   ]
+  }
+ },
+ "E2_rank": {
+  "8": [
+   -1.12,
+   -9.11,
+   1.97
+  ],
+  "11": [
+   -0.58,
+   -6.25,
+   1.82
+  ]
+ },
+ "E2_perclass_RF": {
+  "Pstar": {
+   "chat": 41.8,
+   "email": 0.5,
+   "file_transfer": 15.4,
+   "streaming": 59.0,
+   "voip": 50.8,
+   "vpn_chat": 16.3,
+   "vpn_file_transfer": 3.2,
+   "vpn_streaming": 57.4,
+   "vpn_voip": 14.9
+  },
+  "evidence": {
+   "chat": 43.2,
+   "email": 0.0,
+   "file_transfer": 15.0,
+   "streaming": 49.9,
+   "voip": 50.6,
+   "vpn_chat": 9.7,
+   "vpn_file_transfer": 2.5,
+   "vpn_streaming": 57.8,
+   "vpn_voip": 21.5
+  },
+  "E2": {
+   "chat": 38.3,
+   "email": 0.2,
+   "file_transfer": 12.6,
+   "streaming": 40.1,
+   "voip": 50.1,
+   "vpn_chat": 14.2,
+   "vpn_file_transfer": 3.0,
+   "vpn_streaming": 55.3,
+   "vpn_voip": 22.1
+  }
+ },
+ "B": {
+  "Pstar_8": {
+   "mF1": 30.41,
+   "sd_ddof1": 1.37,
+   "acc": 41.29,
+   "per_seed": [
+    30.74,
+    28.89,
+    31.58
+   ],
+   "per_class": {
+    "0": 42.2,
+    "1": 0.0,
+    "2": 18.7,
+    "3": 60.4,
+    "4": 54.8,
+    "5": 25.9,
+    "6": 20.7,
+    "7": 20.4
+   }
+  },
+  "E3_8": {
+   "mF1": 18.36,
+   "sd_ddof1": 2.9,
+   "acc": 26.49,
+   "per_seed": [
+    18.93,
+    15.23,
+    20.94
+   ],
+   "per_class": {
+    "0": 34.3,
+    "1": 0.4,
+    "2": 12.7,
+    "3": 5.4,
+    "4": 44.5,
+    "5": 16.5,
+    "6": 18.6,
+    "7": 14.4
+   }
+  },
+  "E3_8_minus_Pstar_8": [
+   -12.04,
+   -17.27,
+   -8.36
+  ],
+  "E3_8_minus_Pstar_8_E3clusters": [
+   -12.04,
+   -17.31,
+   -3.39
+  ]
+ }
+}

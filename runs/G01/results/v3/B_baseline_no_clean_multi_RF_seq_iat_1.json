@@ -1,0 +1,232 @@
+{
+  "job": {
+    "id": "B_baseline_no_clean_multi_RF_seq_iat_1",
+    "stage": "B",
+    "kind": "baseline",
+    "status": "pending",
+    "condition": "no_clean",
+    "task": "multi",
+    "model": "RF_seq_iat",
+    "seed": 1
+  },
+  "status": "completed",
+  "classes": [
+    "chat",
+    "email",
+    "file_transfer",
+    "streaming",
+    "voip",
+    "vpn_chat",
+    "vpn_file_transfer",
+    "vpn_streaming",
+    "vpn_voip"
+  ],
+  "n_flows": 9459,
+  "metrics": {
+    "macro_f1": 0.2687283077425325,
+    "accuracy": 0.3599746273390422,
+    "confusion_matrix": [
+      [
+        251,
+        230,
+        32,
+        12,
+        337,
+        0,
+        6,
+        6,
+        5
+      ],
+      [
+        230,
+        1,
+        96,
+        2,
+        195,
+        0,
+        15,
+        0,
+        0
+      ],
+      [
+        57,
+        40,
+        210,
+        678,
+        1167,
+        17,
+        25,
+        10,
+        54
+      ],
+      [
+        7,
+        2,
+        91,
+        712,
+        157,
+        4,
+        1,
+        8,
+        39
+      ],
+      [
+        308,
+        12,
+        544,
+        204,
+        1746,
+        7,
+        8,
+        7,
+        67
+      ],
+      [
+        6,
+        0,
+        5,
+        11,
+        33,
+        29,
+        70,
+        21,
+        25
+      ],
+      [
+        44,
+        0,
+        25,
+        2,
+        38,
+        143,
+        0,
+        170,
+        63
+      ],
+      [
+        27,
+        0,
+        28,
+        58,
+        19,
+        60,
+        32,
+        262,
+        0
+      ],
+      [
+        59,
+        10,
+        65,
+        128,
+        202,
+        10,
+        19,
+        1,
+        194
+      ]
+    ],
+    "per_class": [
+      {
+        "class": "chat",
+        "precision": 0.2537917087967644,
+        "recall": 0.285551763367463,
+        "f1": 0.26873661670235544,
+        "support": 879
+      },
+      {
+        "class": "email",
+        "precision": 0.003389830508474576,
+        "recall": 0.0018552875695732839,
+        "f1": 0.002398081534772182,
+        "support": 539
+      },
+      {
+        "class": "file_transfer",
+        "precision": 0.19160583941605838,
+        "recall": 0.09300265721877768,
+        "f1": 0.12522361359570663,
+        "support": 2258
+      },
+      {
+        "class": "streaming",
+        "precision": 0.39402324294410623,
+        "recall": 0.6973555337904016,
+        "f1": 0.5035360678925036,
+        "support": 1021
+      },
+      {
+        "class": "voip",
+        "precision": 0.44838212634822805,
+        "recall": 0.6014467791939373,
+        "f1": 0.513756068853906,
+        "support": 2903
+      },
+      {
+        "class": "vpn_chat",
+        "precision": 0.10740740740740741,
+        "recall": 0.145,
+        "f1": 0.12340425531914893,
+        "support": 200
+      },
+      {
+        "class": "vpn_file_transfer",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 485
+      },
+      {
+        "class": "vpn_streaming",
+        "precision": 0.5402061855670103,
+        "recall": 0.5390946502057613,
+        "f1": 0.5396498455200824,
+        "support": 486
+      },
+      {
+        "class": "vpn_voip",
+        "precision": 0.43400447427293065,
+        "recall": 0.2819767441860465,
+        "f1": 0.3418502202643172,
+        "support": 688
+      }
+    ]
+  },
+  "fold_details": [
+    {
+      "fold": 0,
+      "n_fit": 4725,
+      "n_validation": 639,
+      "n_test": 1252
+    },
+    {
+      "fold": 1,
+      "n_fit": 5161,
+      "n_validation": 791,
+      "n_test": 2732
+    },
+    {
+      "fold": 2,
+      "n_fit": 5139,
+      "n_validation": 803,
+      "n_test": 843
+    },
+    {
+      "fold": 3,
+      "n_fit": 4640,
+      "n_validation": 640,
+      "n_test": 2210
+    },
+    {
+      "fold": 4,
+      "n_fit": 4625,
+      "n_validation": 522,
+      "n_test": 2422
+    }
+  ],
+  "metric_aggregation": "merged five-fold OOF predictions",
+  "training_cap_per_class": 1000,
+  "validation_split_before_training_cap": true,
+  "tie_break_epoch": "first maximum validation macro-F1",
+  "grouping": "no_clean"
+}

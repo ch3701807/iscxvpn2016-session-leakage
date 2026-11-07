@@ -1,0 +1,85 @@
+{
+  "job": {
+    "id": "A_baseline_Pstar_binary_RF_seq_iat_1",
+    "stage": "A",
+    "kind": "baseline",
+    "status": "pending",
+    "condition": "Pstar",
+    "task": "binary",
+    "model": "RF_seq_iat",
+    "seed": 1
+  },
+  "status": "completed",
+  "classes": [
+    "non_vpn",
+    "vpn"
+  ],
+  "n_flows": 7767,
+  "metrics": {
+    "macro_f1": 0.8214402082518623,
+    "accuracy": 0.8511651860435174,
+    "confusion_matrix": [
+      [
+        4890,
+        654
+      ],
+      [
+        502,
+        1721
+      ]
+    ],
+    "per_class": [
+      {
+        "class": "non_vpn",
+        "precision": 0.9068991097922848,
+        "recall": 0.8820346320346321,
+        "f1": 0.8942940746159473,
+        "support": 5544
+      },
+      {
+        "class": "vpn",
+        "precision": 0.7246315789473684,
+        "recall": 0.774179037336932,
+        "f1": 0.7485863418877772,
+        "support": 2223
+      }
+    ]
+  },
+  "fold_details": [
+    {
+      "fold": 0,
+      "n_fit": 2000,
+      "n_validation": 132,
+      "n_test": 1320
+    },
+    {
+      "fold": 1,
+      "n_fit": 2000,
+      "n_validation": 133,
+      "n_test": 2059
+    },
+    {
+      "fold": 2,
+      "n_fit": 2000,
+      "n_validation": 191,
+      "n_test": 366
+    },
+    {
+      "fold": 3,
+      "n_fit": 2000,
+      "n_validation": 30,
+      "n_test": 1138
+    },
+    {
+      "fold": 4,
+      "n_fit": 2000,
+      "n_validation": 59,
+      "n_test": 2884
+    }
+  ],
+  "metric_aggregation": "merged five-fold OOF predictions",
+  "training_cap_per_class": 1000,
+  "validation_split_before_training_cap": true,
+  "tie_break_epoch": "first maximum validation macro-F1",
+  "grouping": "Pstar"
+}

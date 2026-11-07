@@ -1,0 +1,939 @@
+{
+  "job": {
+    "id": "B_baseline_no_clean_multi_RF_seq_iat_1",
+    "condition": "no_clean",
+    "seed": 1,
+    "model": "RF_seq_iat",
+    "kind": "baseline",
+    "task": "multi",
+    "repair_r": 1,
+    "split_file": "data/splits/G04_no_clean_1_splits.npz",
+    "split_sha256": "0457061ba239109cc5cc951d42dcb109f281a35014ad1a218a83b936c7a9eb5d",
+    "max_epochs": 30,
+    "patience": null,
+    "reference_task": "G01",
+    "reference_file": "results/v3/B_baseline_no_clean_multi_RF_seq_iat_1.json",
+    "reference_sha256": "94be4a0b3a65ca34331aca05ce42e9c2ee32f6ba038527455c95e09ccf00236d"
+  },
+  "status": "completed",
+  "post_G01_G02_G03_correction": true,
+  "rules_fixed_before_training": true,
+  "classes": [
+    "chat",
+    "email",
+    "file_transfer",
+    "streaming",
+    "voip",
+    "vpn_chat",
+    "vpn_file_transfer",
+    "vpn_streaming",
+    "vpn_voip"
+  ],
+  "n_flows": 9459,
+  "metrics": {
+    "macro_f1": 0.32320649099379595,
+    "accuracy": 0.4026852732847024,
+    "confusion_matrix": [
+      [
+        235,
+        228,
+        85,
+        7,
+        318,
+        0,
+        1,
+        5,
+        0
+      ],
+      [
+        206,
+        1,
+        231,
+        0,
+        101,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        93,
+        30,
+        334,
+        657,
+        1009,
+        21,
+        14,
+        12,
+        88
+      ],
+      [
+        6,
+        0,
+        74,
+        785,
+        118,
+        2,
+        0,
+        3,
+        33
+      ],
+      [
+        332,
+        23,
+        424,
+        228,
+        1823,
+        14,
+        7,
+        7,
+        45
+      ],
+      [
+        5,
+        0,
+        7,
+        12,
+        29,
+        62,
+        46,
+        17,
+        22
+      ],
+      [
+        15,
+        0,
+        69,
+        1,
+        104,
+        75,
+        13,
+        203,
+        5
+      ],
+      [
+        40,
+        0,
+        11,
+        40,
+        12,
+        25,
+        11,
+        343,
+        4
+      ],
+      [
+        46,
+        7,
+        52,
+        133,
+        200,
+        11,
+        23,
+        3,
+        213
+      ]
+    ],
+    "per_class": [
+      {
+        "class": "chat",
+        "precision": 0.24028629856850717,
+        "recall": 0.267349260523322,
+        "f1": 0.25309639203015616,
+        "support": 879
+      },
+      {
+        "class": "email",
+        "precision": 0.0034602076124567475,
+        "recall": 0.0018552875695732839,
+        "f1": 0.0024154589371980675,
+        "support": 539
+      },
+      {
+        "class": "file_transfer",
+        "precision": 0.2595182595182595,
+        "recall": 0.1479185119574845,
+        "f1": 0.18843441466854727,
+        "support": 2258
+      },
+      {
+        "class": "streaming",
+        "precision": 0.4213633923778851,
+        "recall": 0.7688540646425074,
+        "f1": 0.544382801664355,
+        "support": 1021
+      },
+      {
+        "class": "voip",
+        "precision": 0.49084544964997306,
+        "recall": 0.6279710644161213,
+        "f1": 0.5510049871542995,
+        "support": 2903
+      },
+      {
+        "class": "vpn_chat",
+        "precision": 0.29523809523809524,
+        "recall": 0.31,
+        "f1": 0.3024390243902439,
+        "support": 200
+      },
+      {
+        "class": "vpn_file_transfer",
+        "precision": 0.11304347826086956,
+        "recall": 0.026804123711340205,
+        "f1": 0.04333333333333333,
+        "support": 485
+      },
+      {
+        "class": "vpn_streaming",
+        "precision": 0.5784148397976391,
+        "recall": 0.7057613168724279,
+        "f1": 0.6357738646895272,
+        "support": 486
+      },
+      {
+        "class": "vpn_voip",
+        "precision": 0.5195121951219512,
+        "recall": 0.30959302325581395,
+        "f1": 0.3879781420765027,
+        "support": 688
+      }
+    ]
+  },
+  "fold_details": [
+    {
+      "fold": 0,
+      "n_fit": 4816,
+      "n_validation": 923,
+      "n_test": 1421,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 1,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 1,
+      "n_fit": 5273,
+      "n_validation": 851,
+      "n_test": 749,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 10008,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 2,
+      "n_fit": 5180,
+      "n_validation": 662,
+      "n_test": 1393,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 20015,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 3,
+      "n_fit": 4852,
+      "n_validation": 820,
+      "n_test": 1895,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 30022,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    },
+    {
+      "fold": 4,
+      "n_fit": 4010,
+      "n_validation": 565,
+      "n_test": 4001,
+      "selected_epoch": null,
+      "stop_epoch": null,
+      "validation_curve": [],
+      "model_seed": 40029,
+      "test_inference_count": 1,
+      "RF_parameters": {
+        "n_estimators": 300,
+        "n_jobs": 12
+      },
+      "normalization": {
+        "normalization": false
+      }
+    }
+  ],
+  "protocol_sha256": "c539f9d0a884b0336d6959d76c1c6847c2e9f65cf199b1521ae88e9a06d684de",
+  "split_sha256": "0457061ba239109cc5cc951d42dcb109f281a35014ad1a218a83b936c7a9eb5d",
+  "metric_aggregation": "merged five-fold OOF predictions",
+  "tie_break_epoch": "first maximum",
+  "training_pool_reused_verbatim": true,
+  "resumed_completed_folds": [],
+  "grouping": "no_clean",
+  "split_audit": [
+    {
+      "fold": 0,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 813,
+          "fit_groups": 12,
+          "validation_flows": 21,
+          "validation_groups": 1,
+          "test_flows": 45,
+          "test_groups": 3,
+          "outer_train_flows": 834,
+          "outer_train_groups": 13
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 328,
+          "fit_groups": 1,
+          "validation_flows": 211,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 539,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 22,
+          "validation_flows": 16,
+          "validation_groups": 1,
+          "test_flows": 506,
+          "test_groups": 4,
+          "outer_train_flows": 1752,
+          "outer_train_groups": 24
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 659,
+          "fit_groups": 13,
+          "validation_flows": 6,
+          "validation_groups": 1,
+          "test_flows": 356,
+          "test_groups": 5,
+          "outer_train_flows": 665,
+          "outer_train_groups": 14
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 19,
+          "validation_flows": 61,
+          "validation_groups": 1,
+          "test_flows": 279,
+          "test_groups": 2,
+          "outer_train_flows": 2624,
+          "outer_train_groups": 20
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 132,
+          "fit_groups": 3,
+          "validation_flows": 9,
+          "validation_groups": 1,
+          "test_flows": 59,
+          "test_groups": 1,
+          "outer_train_flows": 141,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 110,
+          "fit_groups": 1,
+          "validation_flows": 357,
+          "validation_groups": 1,
+          "test_flows": 18,
+          "test_groups": 1,
+          "outer_train_flows": 467,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 219,
+          "fit_groups": 2,
+          "validation_flows": 109,
+          "validation_groups": 1,
+          "test_flows": 158,
+          "test_groups": 1,
+          "outer_train_flows": 328,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 555,
+          "fit_groups": 5,
+          "validation_flows": 133,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 688,
+          "outer_train_groups": 6
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4816
+          ],
+          "sha256": "0278dafd595e907c434282f6b966f97e601f7e415248fe1dc2ca2fa817170f63"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            923
+          ],
+          "sha256": "eeb0b33c4671cac5436f7d592775e90ce68a691c3aa30e59562f4baeb94fbb29"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1421
+          ],
+          "sha256": "a4934241b959cf1389c1dea2848d9d99bda22bf89d4bd5140ab8404e4a3bd9b1"
+        }
+      }
+    },
+    {
+      "fold": 1,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 762,
+          "fit_groups": 11,
+          "validation_flows": 5,
+          "validation_groups": 1,
+          "test_flows": 112,
+          "test_groups": 4,
+          "outer_train_flows": 767,
+          "outer_train_groups": 12
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 328,
+          "fit_groups": 1,
+          "validation_flows": 211,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 539,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 16,
+          "validation_flows": 2,
+          "validation_groups": 1,
+          "test_flows": 211,
+          "test_groups": 8,
+          "outer_train_flows": 2047,
+          "outer_train_groups": 20
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 802,
+          "fit_groups": 15,
+          "validation_flows": 46,
+          "validation_groups": 1,
+          "test_flows": 173,
+          "test_groups": 3,
+          "outer_train_flows": 848,
+          "outer_train_groups": 16
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 19,
+          "validation_flows": 242,
+          "validation_groups": 1,
+          "test_flows": 120,
+          "test_groups": 2,
+          "outer_train_flows": 2783,
+          "outer_train_groups": 20
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 191,
+          "fit_groups": 4,
+          "validation_flows": 9,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 200,
+          "outer_train_groups": 5
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 375,
+          "fit_groups": 2,
+          "validation_flows": 110,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 485,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 328,
+          "fit_groups": 3,
+          "validation_flows": 158,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 486,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 487,
+          "fit_groups": 4,
+          "validation_flows": 68,
+          "validation_groups": 1,
+          "test_flows": 133,
+          "test_groups": 1,
+          "outer_train_flows": 555,
+          "outer_train_groups": 5
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            5273
+          ],
+          "sha256": "393b0343a6e95222642157f5aa427182b3b9cc5c55a6d0e5d58f981f8ffe9cff"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            851
+          ],
+          "sha256": "f5062801d6895807df000e9ecde83249543f51a815b447fd2b6b4d7c4f33521d"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            749
+          ],
+          "sha256": "bcd127934f4a3afdcd869ceb7f46cd89ce82dd42549ab3bdf1e9d069671d2eb5"
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 856,
+          "fit_groups": 14,
+          "validation_flows": 13,
+          "validation_groups": 1,
+          "test_flows": 10,
+          "test_groups": 1,
+          "outer_train_flows": 869,
+          "outer_train_groups": 15
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 328,
+          "fit_groups": 1,
+          "validation_flows": 211,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 539,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 20,
+          "validation_flows": 1,
+          "validation_groups": 1,
+          "test_flows": 43,
+          "test_groups": 4,
+          "outer_train_flows": 2215,
+          "outer_train_groups": 24
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 916,
+          "fit_groups": 16,
+          "validation_flows": 29,
+          "validation_groups": 1,
+          "test_flows": 76,
+          "test_groups": 2,
+          "outer_train_flows": 945,
+          "outer_train_groups": 17
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 16,
+          "validation_flows": 116,
+          "validation_groups": 1,
+          "test_flows": 777,
+          "test_groups": 5,
+          "outer_train_flows": 2126,
+          "outer_train_groups": 17
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 68,
+          "fit_groups": 2,
+          "validation_flows": 9,
+          "validation_groups": 1,
+          "test_flows": 123,
+          "test_groups": 2,
+          "outer_train_flows": 77,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 357,
+          "fit_groups": 1,
+          "validation_flows": 18,
+          "validation_groups": 1,
+          "test_flows": 110,
+          "test_groups": 1,
+          "outer_train_flows": 375,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 245,
+          "fit_groups": 2,
+          "validation_flows": 132,
+          "validation_groups": 1,
+          "test_flows": 109,
+          "test_groups": 1,
+          "outer_train_flows": 377,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 410,
+          "fit_groups": 4,
+          "validation_flows": 133,
+          "validation_groups": 1,
+          "test_flows": 145,
+          "test_groups": 1,
+          "outer_train_flows": 543,
+          "outer_train_groups": 5
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            5180
+          ],
+          "sha256": "5413cd5889abcd77d612e0da96047b7574ace62ed457b85658eef89d1cb56e45"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            662
+          ],
+          "sha256": "22409fc1f35ffecf4409e9f607b1e3b356cc67d5b8803a9dd05fc730c1b46af1"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1393
+          ],
+          "sha256": "3d3cb8e74af1f9fd5f2da2d0bee11d45daea3cbaa22d7738e2226b30d534d974"
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 764,
+          "fit_groups": 11,
+          "validation_flows": 12,
+          "validation_groups": 1,
+          "test_flows": 103,
+          "test_groups": 4,
+          "outer_train_flows": 776,
+          "outer_train_groups": 12
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 211,
+          "fit_groups": 1,
+          "validation_flows": 0,
+          "validation_groups": 0,
+          "test_flows": 328,
+          "test_groups": 1,
+          "outer_train_flows": 211,
+          "outer_train_groups": 1
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 1000,
+          "fit_groups": 18,
+          "validation_flows": 1,
+          "validation_groups": 1,
+          "test_flows": 180,
+          "test_groups": 4,
+          "outer_train_flows": 2078,
+          "outer_train_groups": 24
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 823,
+          "fit_groups": 15,
+          "validation_flows": 56,
+          "validation_groups": 1,
+          "test_flows": 142,
+          "test_groups": 3,
+          "outer_train_flows": 879,
+          "outer_train_groups": 16
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 16,
+          "validation_flows": 242,
+          "validation_groups": 1,
+          "test_flows": 846,
+          "test_groups": 5,
+          "outer_train_flows": 2057,
+          "outer_train_groups": 17
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 95,
+          "fit_groups": 3,
+          "validation_flows": 96,
+          "validation_groups": 1,
+          "test_flows": 9,
+          "test_groups": 1,
+          "outer_train_flows": 191,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 375,
+          "fit_groups": 2,
+          "validation_flows": 110,
+          "validation_groups": 1,
+          "test_flows": 0,
+          "test_groups": 0,
+          "outer_train_flows": 485,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 241,
+          "fit_groups": 2,
+          "validation_flows": 158,
+          "validation_groups": 1,
+          "test_flows": 87,
+          "test_groups": 1,
+          "outer_train_flows": 399,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 343,
+          "fit_groups": 3,
+          "validation_flows": 145,
+          "validation_groups": 1,
+          "test_flows": 200,
+          "test_groups": 2,
+          "outer_train_flows": 488,
+          "outer_train_groups": 4
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4852
+          ],
+          "sha256": "b667f80cd6cb0e7f082be87af6cdb90bcf00dd4f88b1d54d5acb485a8e8a37de"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            820
+          ],
+          "sha256": "dd5986b575ee8c32d2a92cbc0e24b432d38ea2e5fe47539d94769ae7f5dc024d"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            1895
+          ],
+          "sha256": "212289964afed4daa658c3797d0a91cfd0346b74707bee43405bb35c4428da76"
+        }
+      }
+    },
+    {
+      "fold": 4,
+      "per_class": [
+        {
+          "class_index": 0,
+          "fit_flows": 221,
+          "fit_groups": 11,
+          "validation_flows": 49,
+          "validation_groups": 1,
+          "test_flows": 609,
+          "test_groups": 4,
+          "outer_train_flows": 270,
+          "outer_train_groups": 12
+        },
+        {
+          "class_index": 1,
+          "fit_flows": 328,
+          "fit_groups": 1,
+          "validation_flows": 0,
+          "validation_groups": 0,
+          "test_flows": 211,
+          "test_groups": 1,
+          "outer_train_flows": 328,
+          "outer_train_groups": 1
+        },
+        {
+          "class_index": 2,
+          "fit_flows": 939,
+          "fit_groups": 19,
+          "validation_flows": 1,
+          "validation_groups": 1,
+          "test_flows": 1318,
+          "test_groups": 8,
+          "outer_train_flows": 940,
+          "outer_train_groups": 20
+        },
+        {
+          "class_index": 3,
+          "fit_flows": 727,
+          "fit_groups": 12,
+          "validation_flows": 20,
+          "validation_groups": 1,
+          "test_flows": 274,
+          "test_groups": 6,
+          "outer_train_flows": 747,
+          "outer_train_groups": 13
+        },
+        {
+          "class_index": 4,
+          "fit_flows": 1000,
+          "fit_groups": 13,
+          "validation_flows": 139,
+          "validation_groups": 1,
+          "test_flows": 881,
+          "test_groups": 8,
+          "outer_train_flows": 2022,
+          "outer_train_groups": 14
+        },
+        {
+          "class_index": 5,
+          "fit_flows": 164,
+          "fit_groups": 3,
+          "validation_flows": 27,
+          "validation_groups": 1,
+          "test_flows": 9,
+          "test_groups": 1,
+          "outer_train_flows": 191,
+          "outer_train_groups": 4
+        },
+        {
+          "class_index": 6,
+          "fit_flows": 18,
+          "fit_groups": 1,
+          "validation_flows": 110,
+          "validation_groups": 1,
+          "test_flows": 357,
+          "test_groups": 1,
+          "outer_train_flows": 128,
+          "outer_train_groups": 2
+        },
+        {
+          "class_index": 7,
+          "fit_flows": 267,
+          "fit_groups": 2,
+          "validation_flows": 87,
+          "validation_groups": 1,
+          "test_flows": 132,
+          "test_groups": 1,
+          "outer_train_flows": 354,
+          "outer_train_groups": 3
+        },
+        {
+          "class_index": 8,
+          "fit_flows": 346,
+          "fit_groups": 3,
+          "validation_flows": 132,
+          "validation_groups": 1,
+          "test_flows": 210,
+          "test_groups": 2,
+          "outer_train_flows": 478,
+          "outer_train_groups": 4
+        }
+      ],
+      "arrays": {
+        "fit": {
+          "dtype": "int64",
+          "shape": [
+            4010
+          ],
+          "sha256": "24c692ecbd438c448016fa3195a0e72340e088ca210e845f6ec0097f755ad8c6"
+        },
+        "validation": {
+          "dtype": "int64",
+          "shape": [
+            565
+          ],
+          "sha256": "c9117d41c3ffcd93a3a8bd772f1de5bda801359bc55f0f8df931aed42ac879cb"
+        },
+        "test": {
+          "dtype": "int64",
+          "shape": [
+            4001
+          ],
+          "sha256": "b549ec28700f74eefaa23b2872d78157171243c99eaf4b45f2d7fb6e4baa9383"
+        }
+      }
+    }
+  ]
+}
