@@ -120,7 +120,7 @@ def f1cm(cm, exclude=None):
     (its flows stay in the confusion matrix, so the other classes' F1 is unchanged)."""
     tp = np.diagonal(cm, axis1=-2, axis2=-1); sup = cm.sum(-1); den = sup + cm.sum(-2)
     f = np.where(den > 0, 2 * tp / np.maximum(den, 1), 0.0); present = sup > 0
-    if exclude is not None: present = present & (np.arange(cm.shape[-1]) != exclude)
+    if exclude is not None: present = present & ~np.isin(np.arange(cm.shape[-1]), np.atleast_1d(exclude))  # v3.5: int or several classes
     return (f * present).sum(-1) / present.sum(-1)
 
 # v3 (second external review, 11-08): resample clusters within each class (strata), so that every resample keeps the
@@ -134,6 +134,7 @@ def bexpr(terms, drop=None, cluster="E3", seed=0):
     on the same flows (sorted ids). drop = class index whose test flows are removed (leave-one-class-out).
     Clusters = E3 groups of the flows' files (or suffix sessions). Returns (point, lo, hi) in pp."""
     ref = terms[0][1][0]
+    assert drop is None or DROP_MODE == "term" or np.isscalar(drop), "several classes can only be dropped as terms"
     for _, runs in terms:
         for r in runs: assert (r["ids"] == ref["ids"]).all()
     keep = np.ones(len(ref["ids"]), bool) if (drop is None or DROP_MODE == "term") else ref["t"] != drop
@@ -632,6 +633,50 @@ M("BInvMax", B6["inversion_max_pct"], "largest per-pair share of order inversion
 M("BDumpcap", B6["n_dumpcap_b_pcap_a"], "pairs whose b file is pcapng written by Dumpcap and whose a file is pcap", "{:d}")
 assert B6["dumpcap_a_snaplens"] == [65535]
 M("BDiffer", B6["n_format_or_snaplen_differ"], "pairs whose two files differ in container format or snapshot length", "{:d}")
+# ---------------------------------------------------------------- v3.5 (11-15, after the Fable 5.2 weakness list, section 1)
+# Which classes carry each step of the ladder? Macro-F1 is the mean of the per-class F1 values (three-seed means), so a class
+# contributes (its own drop) / 9 to a step. Small = at most 3 suffix sessions (the NClassesFewSess classes); large = the classes
+# with at least 10 suffix sessions (16 or more here). Excluding classes removes their terms from the macro average only.
+VFT = classes.index("vpn_file_transfer")
+SMALL = [i for i, c in enumerate(classes) if sess[c]["suffix"] <= 3]; assert [classes[i] for i in SMALL] == ["email", "vpn_file_transfer"]
+LARGE = [i for i, c in enumerate(classes) if sess[c]["suffix"] >= 10]
+assert len(LARGE) == 4 and max(sess[c]["suffix"] for c in classes if sess[c]["suffix"] < 10) == 6
+M("NSessLargeMin", min(sess[classes[i]]["suffix"] for i in LARGE), "fewest suffix sessions among the classes with at least 10", "{:d}")
+M("NClassesLarge", len(LARGE), "classes with at least 10 suffix sessions", "{:d}")
+PC = {k: {c: np.mean([per_class_f1(r["t"], r["p"], len(classes)) for r in runs_of(k, c)], axis=0) * 100 for c, _ in LAD} for k in ("RF", "Fu", "Cn")}
+assert np.allclose(PC["RF"]["Pstar"], pc["Pstar"]) and np.allclose(PC["RF"]["no_session"], pc["no_session"])
+for k in ("RF", "Fu", "Cn"):
+    for c, _ in LAD:
+        assert abs(PC[k][c].mean() - ladder[(k, c)][0]) < 1e-9, (k, c)
+        if ladder[(k, c)][2] is not None: assert abs(PC[k][c].mean() - PC[k]["Pstar"].mean() - ladder[(k, c)][2]) < 1e-9, (k, c)
+steps = {}
+for k in ("RF", "Fu", "Cn"):
+    dfile = PC[k]["no_session"] - PC[k]["Pstar"]; dflow = PC[k]["leak"] - PC[k]["Pstar"]
+    steps[k] = dict(file_minus_P={classes[i]: round(float(dfile[i]), 2) for i in range(len(classes))},
+                    flow_minus_P={classes[i]: round(float(dflow[i]), 2) for i in range(len(classes))})
+    small_pp = float(dfile[SMALL].sum()) / len(classes)
+    M(f"D{k}FileSmall", small_pp, f"{MN[k]}: part of the file-grouped minus P* step contributed by the two classes with at most 3 suffix sessions (pp)")
+    M(f"D{k}FileSmallShare", 100 * small_pp / float(dfile.mean()), f"{MN[k]}: that part as a share of the whole file-grouped minus P* step (%)", "{:.0f}")
+    M(f"D{k}FileLargeMin", float(dfile[LARGE].min()), f"{MN[k]}: smallest per-class file-grouped minus P* drop among the classes with >=10 suffix sessions (pp)")
+    M(f"D{k}FileLargeMax", float(dfile[LARGE].max()), f"{MN[k]}: largest such drop (pp)")
+    M(f"D{k}FlowClassMin", float(dflow.min()), f"{MN[k]}: smallest per-class flow-random minus P* drop over all classes (pp)")
+    P = runs_of(k, "Pstar")
+    A2 = [align(r, p) for r, p in zip(runs_of(k, "no_session"), P)]; P2 = [align(p, p) for p in P]
+    pt, lo, hi = boot_delta(A2, P2, seed=0, drop=tuple(SMALL))
+    assert abs(pt - (np.delete(PC[k]["no_session"], SMALL).mean() - np.delete(PC[k]["Pstar"], SMALL).mean())) < 1e-9
+    M(f"D{k}FileNoSmall", pt, f"{MN[k]}: file-grouped minus P* with the email and vpn_file_transfer terms removed (pp)")
+    M(f"D{k}FileNoSmallLo", lo, "CI low"); M(f"D{k}FileNoSmallHi", hi, "CI high")
+    steps[k]["file_minus_P_without_small"] = [round(x, 2) for x in (pt, lo, hi)]
+    steps[k]["file_minus_P_loco"] = {classes[i]: [round(x, 2) for x in boot_delta(A2, P2, seed=0, drop=i)] for i in range(len(classes))}
+assert all(steps["RF"]["flow_minus_P"][c] > 0 for c in classes)
+facts["v35_ladder_steps_by_class"] = steps
+facts["v35_perclass_deep"] = {k: {c: [round(float(x), 1) for x in PC[k][c]] for c, _ in LAD} for k in ("Fu", "Cn")}
+L = ["\\begin{tabular}{l" + "c" * 8 + "}", "\\toprule", " & \\multicolumn{4}{c}{Fusion$^\\dagger$} & \\multicolumn{4}{c}{1D-CNN (len+IAT)$^\\dagger$} \\\\",
+     "\\cmidrule(lr){2-5}\\cmidrule(lr){6-9}", "Class & " + " & ".join(["Flow", "File", "P*", "Evid."] * 2) + " \\\\", "\\midrule"]
+for i, cls in enumerate(classes):
+    L.append(cls.replace("_", "\\_") + " & " + " & ".join(f"{PC[k][c][i]:.1f}" for k in ("Fu", "Cn") for c, _ in LAD) + " \\\\")
+L += ["\\bottomrule", "\\end{tabular}"]
+open(f"{OUT}/tab_perclass_deep.tex", "w").write("\n".join(L) + "\n")
 open(f"{OUT}/numbers.tex", "w").write("% generated by build/make_numbers.py -- do not edit\n" + "\n".join(macros) + "\n")
 json.dump(facts, open(f"{OUT}/facts.json", "w"), indent=1, ensure_ascii=False)
 print(len(macros), "macros;", "tables:", sorted(os.path.basename(p) for p in glob.glob(f"{OUT}/tab_*.tex")))

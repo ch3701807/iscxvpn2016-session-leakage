@@ -38,7 +38,7 @@ each file byte for byte with `expected/`, the files the paper was built from.
 | `make_numbers.py` | All tables, macros, and bootstrap confidence intervals of the paper | `numbers.tex`, `tab_*.tex`, `ladder.csv`, `facts.json` |
 
 `numbers.tex` holds one LaTeX macro per number in the paper text, and `facts.json` states what each macro means.
-`tab_*.tex` holds Tables 1–6; `tab_perclass.tex` is a per-class table that the paper does not print. The bootstrap is a class-stratified paired cluster bootstrap over
+`tab_*.tex` holds Tables 1–6; `tab_perclass.tex` (RF) and `tab_perclass_deep.tex` (the two early-stopped deep models) are per-class tables that the paper does not print. The bootstrap is a class-stratified paired cluster bootstrap over
 E3 groups with 10,000 resamples and a fixed seed, so its intervals are reproduced exactly.
 
 ## Layout
