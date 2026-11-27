@@ -274,6 +274,7 @@ for m in ("majority", "stratified_random", "LR_stat", "LR_seq_iat", "RF_stat", "
     facts[f"Pstar_multi_{m}"] = dict(f1=round(f, 2), sd=round(fs, 2), acc=round(a, 2), f1_100=round(e100[0], 2) if e100 else None, f1_conv=round(conv[0], 2) if conv else None)
 L = ["\\begin{tabular}{llrrrr}", "\\toprule",
      " & Model & \\multicolumn{2}{c}{30 epochs (planned)} & 100 ep. & Early stop \\\\",
+     "\\cmidrule(lr){3-4}",
      " & & macro-F1 & accuracy & macro-F1 & macro-F1 \\\\", "\\midrule"]
 for m, f, fs, a, as_, e100, conv in rows:
     kind = "Trivial" if m in ("majority", "stratified_random") else ("Shallow" if not m.isdigit() else "Deep")
@@ -418,6 +419,7 @@ facts["suffix_cluster_sensitivity"] = {
 
 # ---------------------------------------------------------------- other single factors (30 epochs)
 FAC = (("no_clean", "No background cleaning"), ("no_sni", "No SNI zeroing"), ("no_norm", "No standardisation"), ("interaction", "File grouping $+$ no cleaning"))
+_fac30 = {}
 L = ["\\begin{tabular}{lccc}", "\\toprule", "Change from P* & RF (len+IAT) & Fusion (30 ep.) & Bytes CNN (30 ep.) \\\\", "\\midrule"]
 for c, lab in FAC:
     cells = []
@@ -429,6 +431,7 @@ for c, lab in FAC:
         d = [100 * (mf1(a["t"], a["p"]) - mf1(b["t"], b["p"])) for a, b in zip(A, [g1("A", "Pstar", "multi", m, s) for s in SEEDS])]
         same = all((a["p"] == b["p"]).all() and (a["ids"] == b["ids"]).all() for a, b in zip(A, [g1("A", "Pstar", "multi", m, s) for s in SEEDS]) if len(a["ids"]) == len(b["ids"]))
         cells.append("n/a$^\\S$" if same and max(abs(x) for x in d) == 0 else f"{sg(np.mean(d))} [{sg(min(d))}, {sg(max(d))}]")
+        _fac30[(c, m)] = d
         facts[f"factor_{c}_{m}"] = [round(x, 2) for x in d]
     L.append(f"{lab} & " + " & ".join(cells) + " \\\\")
 L += ["\\bottomrule", "\\end{tabular}"]
@@ -677,6 +680,208 @@ for i, cls in enumerate(classes):
     L.append(cls.replace("_", "\\_") + " & " + " & ".join(f"{PC[k][c][i]:.1f}" for k in ("Fu", "Cn") for c, _ in LAD) + " \\\\")
 L += ["\\bottomrule", "\\end{tabular}"]
 open(f"{OUT}/tab_perclass_deep.tex", "w").write("\n".join(L) + "\n")
+# ---------------------------------------------------------------- v3.7 (11-21, after the second agy review of v3.6)
+# The application of a suffix session is read off its name: drop a leading "vpn_", lower-case, match the leading stem.
+# In three VPN classes every suffix session is a different application, so a session-grouped test there also asks for an
+# application unseen in training. Which classes carry the file-grouped -> P* step, and what is left in the LARGE classes
+# (>= 16 suffix sessions; applications recur across sessions)? Same bootstrap as above (E3, class-stratified, terms dropped).
+APPSTEM = (("aim", "aim"), ("icq", "icq"), ("facebook", "facebook"), ("gmail", "gmail"), ("hangout", "hangouts"),
+           ("skype", "skype"), ("email", "email"), ("ftps", "ftps"), ("sftp", "sftp"), ("scp", "scp"), ("netflix", "netflix"),
+           ("spotify", "spotify"), ("vimeo", "vimeo"), ("youtube", "youtube"), ("voipbuster", "voipbuster"))
+def app_of(s):
+    x = s.lower(); x = x[4:] if x.startswith("vpn_") else x
+    hits = [a for stem, a in APPSTEM if x.startswith(stem)]; assert len(hits) == 1, s
+    return hits[0]
+APPS = {c: {s: app_of(s) for s in np.unique(ref["grp"][ref["t"] == i])} for i, c in enumerate(classes)}
+assert all(len(APPS[c]) == sess[c]["suffix"] for c in classes)
+_fig = {r["suffix_session"]: (r["class"], r["application"]) for r in csv.DictReader(open(f"{B}/manifest/session_app_map.csv", newline=""))}
+assert _fig == {s: (c, a) for c, v in APPS.items() for s, a in v.items()}, "session_app_map.csv (figure C input) disagrees"
+NAPP = {c: len(set(v.values())) for c, v in APPS.items()}
+DISTINCT = [i for i, c in enumerate(classes) if NAPP[c] == sess[c]["suffix"]]
+assert [classes[i] for i in DISTINCT] == ["vpn_chat", "vpn_file_transfer", "vpn_streaming"]
+assert sorted(APPS["vpn_streaming"].values()) == ["netflix", "spotify", "vimeo", "youtube"]  # named in the prose
+EMAIL = classes.index("email"); assert sess["email"]["suffix"] == 2 and NAPP["email"] == 1
+MIX = sorted(DISTINCT + [EMAIL])
+M("NClassesDistinctApp", len(DISTINCT), "classes in which every suffix session is a different application", "{:d}")
+facts["v37_applications_per_class"] = {c: dict(sessions=sess[c]["suffix"], applications=NAPP[c]) for c in classes}
+for k in ("RF", "Fu", "Cn"):
+    dfile = PC[k]["no_session"] - PC[k]["Pstar"]
+    mix_pp = float(dfile[MIX].sum()) / len(classes)
+    M(f"D{k}FileMix", mix_pp, f"{MN[k]}: part of the file-grouped minus P* step contributed by email and the three one-application-per-session classes (pp)")
+    M(f"D{k}FileMixShare", 100 * mix_pp / float(dfile.mean()), f"{MN[k]}: that part as a share of the whole step (%)", "{:.0f}")
+    P = runs_of(k, "Pstar")
+    A2 = [align(r, p) for r, p in zip(runs_of(k, "no_session"), P)]; P2 = [align(p, p) for p in P]
+    pt, lo, hi = boot_delta(A2, P2, seed=0, drop=tuple(i for i in range(len(classes)) if i not in LARGE))
+    assert abs(pt - (PC[k]["no_session"][LARGE].mean() - PC[k]["Pstar"][LARGE].mean())) < 1e-9
+    if k == "RF": assert lo > 0, (pt, lo, hi)
+    else: assert lo < 0 < hi, (k, pt, lo, hi)  # prose: "not detectably the deep models"
+    M(f"D{k}FileLarge", pt, f"{MN[k]}: file-grouped minus P*, only the terms of the classes with >= 16 suffix sessions (pp)")
+    M(f"D{k}FileLargeLo", lo, "CI low"); M(f"D{k}FileLargeHi", hi, "CI high")
+    dpt = float(dfile[DISTINCT].mean())
+    steps[k]["v37_file_minus_P_large"] = [round(x, 2) for x in (pt, lo, hi)]
+    steps[k]["v37_file_minus_P_distinct_point"] = round(dpt, 2)  # point only: these classes have 1-4 E3 groups
+facts["v35_ladder_steps_by_class"] = steps
+# ---------------------------------------------------------------- v3.8 (11-22, after the G18 all-pairs audit and the G19 C550 reruns)
+# G19 (agy Neon on the rented C550, CPU only, all added after seeing results): features re-extracted from the raw pcaps are
+# byte-identical to iscx_v3.npz, RF runs are row-identical to G05 (inbox/G19/check_20261122/check_g19.py, 2,808 checks).
+# Deep runs use early stopping on CPU; the paper's deep runs are on GPU. All-pairs evidence sessions = confirmed pairs among
+# all 9,730 file pairs (G18 R2). Bootstrap as above: 130-pair E3 clusters, class-stratified, NBOOT resamples.
+X19 = f"{B}/runs/G19"
+_pairs = list(csv.DictReader(gzip.open(f"{B}/runs/G18/audit/G18_all_pairs.csv.gz", "rt", newline="")))
+NF = int(facts["NFiles"]["value"]); assert len(_pairs) == NF * (NF - 1) // 2
+_conf = [r for r in _pairs if r["verdict"] == "confirmed"]
+assert all(r["same_class"] == "True" for r in _conf)  # prose: no cross-class pair was confirmed
+_new = [r for r in _conf if r["in_original_130"] != "True"]; assert len(_new) == 1 and _new[0]["time_relation"] == "adjacent"
+EVALL = json.load(open(f"{B}/runs/G18/audit/evidence_sessions_allpairs.json"))
+assert [(e["file_a"], e["file_b"]) for e in EVALL["new_edges_vs_130"]] == [(_new[0]["file_a"], _new[0]["file_b"])]
+assert EVALL["new_edges_vs_130"][0]["class"] == "voip" and all("hangouts" in _new[0][k] for k in ("file_a", "file_b"))
+assert len(set(EVALL["file_to_session"].values())) == EVALL["evidence_session_count"]
+M("NAllPairs", len(_pairs), "file pairs in the all-pairs audit (G18 R2)", "{:,d}")
+M("NAllNewConf", len(_new), "confirmed pairs found only by the all-pairs audit", "{:d}")
+M("AllNewGap", float(_new[0]["gap_seconds"]), "gap between the two captures of the newly confirmed pair (s)", "{:.0f}")
+M("NEvidAllGroups", EVALL["evidence_session_count"], "all-pairs evidence session groups over all files", "{:d}")
+L19 = lambda d, j: load(f"{X19}/{d}/results/v3/{j}_predictions.csv.gz", raw=True)
+rf130 = runs_of("RF", "evidence"); rfP38 = runs_of("RF", "Pstar")
+rf_all = [L19("G19all", f"G19all_evidence_multi_RF_seq_iat_{s}") for s in SEEDS]
+for a, b in zip([L19("G19", f"G19_evidence_multi_RF_seq_iat_{s}") for s in SEEDS], rf130):
+    assert (a["ids"] == b["ids"]).all() and (a["p"] == b["p"]).all() and (a["fold"] == b["fold"]).all()
+for r in rf_all:
+    assert all(EVALL["file_to_session"][f] == g for f, g in zip(r["file"], r["grp"]))
+M("NEvidAllMulti", len(set(rf_all[0]["grp"])), "all-pairs evidence session groups in the nine-class task", "{:d}")
+cpu38 = {k: {c: [L19(d, f"{d}_{cc}_multi_{m}_{s}_es") for s in SEEDS] for c, d, cc in (("Pstar", "G19", "Pstar"), ("evidence", "G19", "evidence"), ("evidence_all", "G19all", "evidence"))}
+         for k, m in DEEP.items()}
+def _step(A, P): return boot_delta([align(a, p) for a, p in zip(A, P)], [align(p, p) for p in P], seed=0)  # as the ladder
+v38 = {}
+for k, A, P in (("RF", rf_all, rfP38), ("Fu", cpu38["Fu"]["evidence_all"], cpu38["Fu"]["Pstar"]), ("Cn", cpu38["Cn"]["evidence_all"], cpu38["Cn"]["Pstar"])):
+    pt, lo, hi = _step(A, P); v38[f"{k}_evidence_all_minus_Pstar"] = [round(x, 2) for x in (pt, lo, hi)]
+    if k == "Cn": assert hi < 0, (pt, lo, hi)
+    else: assert lo < 0 < hi, (k, pt, lo, hi)  # prose: the RF and Fusion steps lose their CI-excluding-zero status
+    if k == "Fu": assert pt > 0  # prose writes "+"
+    M(f"D{k}EvidAll", pt, f"{MN[k]}: all-pairs evidence minus P* ({'CPU' if k != 'RF' else 'RF'} runs, pp)")
+    M(f"D{k}EvidAllLo", lo, "CI low"); M(f"D{k}EvidAllHi", hi, "CI high")
+pt, lo, hi = _step(cpu38["Cn"]["evidence"], cpu38["Cn"]["Pstar"]); assert hi < 0, (pt, lo, hi)  # prose: CPU alone moves the 1D-CNN step
+M("DCnEvidCPU", pt, "1D-CNN, early stopping, CPU: 130-pair evidence minus P* (pp)"); M("DCnEvidCPULo", lo, "CI low"); M("DCnEvidCPUHi", hi, "CI high")
+v38["Cn_evidence_minus_Pstar_cpu_130"] = [round(x, 2) for x in (pt, lo, hi)]
+pt, lo, hi = boot_delta(cpu38["Cn"]["evidence_all"], rf_all, seed=1); assert hi < 0, (pt, lo, hi)
+M("RCnEvidAll", pt, "1D-CNN (CPU, early stopping) minus RF, all-pairs evidence sessions, all classes (pp)")
+M("RCnEvidAllLo", lo, "CI low"); M("RCnEvidAllHi", hi, "CI high")
+v38["Cn_minus_RF_evidence_all"] = [round(x, 2) for x in (pt, lo, hi)]
+def _sfold(r, grp):  # session -> test fold
+    m = {}
+    for g, f in zip(grp, r["fold"]): assert m.setdefault(g, f) == f, "session split across test folds"
+    return m
+def _agree(m1, m2):
+    k = sorted(m1); assert sorted(m2) == k
+    a = np.array([m1[x] for x in k]); b = np.array([m2[x] for x in k]); iu = np.triu_indices(len(k), 1)
+    return float(np.mean((a[:, None] == a[None, :])[iu] == (b[:, None] == b[None, :])[iu]))
+_ca = []
+for r130, rall in zip(rf130, rf_all):  # over the 130-pair evidence sessions (each lies inside one all-pairs session)
+    rall = align(rall, r130)
+    _ca.append(_agree(_sfold(r130, r130["grp"]), _sfold(rall, r130["grp"])))
+_cs = [_agree(_sfold(rf130[i], rf130[i]["grp"]), _sfold(rf130[j], rf130[j]["grp"])) for i in range(3) for j in range(i + 1, 3)]
+assert max(_ca) < min(_cs)
+M("CoAssignAllMin", min(_ca), "session co-assignment agreement, all-pairs vs 130-pair evidence folds, same seed: smallest", "{:.2f}")
+M("CoAssignAllMax", max(_ca), "same, largest", "{:.2f}")
+M("CoAssignSeedMin", min(_cs), "session co-assignment agreement between seeds, 130-pair evidence folds: smallest", "{:.2f}")
+M("CoAssignSeedMax", max(_cs), "same, largest", "{:.2f}")
+v38["coassign_all_vs_130_per_seed"] = [round(x, 4) for x in _ca]; v38["coassign_between_seeds_130"] = [round(x, 4) for x in _cs]
+# hardware: same seeds and folds, CPU (G19) minus GPU (G05), the 12 early-stopped runs of the two deep models under P* and evidence
+_run, _mean = [], []
+for k in DEEP:
+    for c in ("Pstar", "evidence"):
+        d = []
+        for a, b in zip(cpu38[k][c], runs_of(k, c)):
+            assert (a["ids"] == b["ids"]).all() and (a["fold"] == b["fold"]).all() and (a["t"] == b["t"]).all()
+            d.append(100 * (mf1(a["t"], a["p"]) - mf1(b["t"], b["p"])))
+        _run += d; _mean.append(float(np.mean(d))); v38[f"cpu_minus_gpu_{k}_{c}"] = [round(x, 2) for x in d]
+assert len(_run) == 12 and min(_run) < 0 < max(_run) and min(_mean) < 0 < max(_mean)
+M("NHWRuns", len(_run), "early-stopped deep runs rerun on CPU with the same seeds and folds", "{:d}")
+M("HWRunMin", min(_run), "CPU minus GPU macro-F1, per run: smallest (pp)"); M("HWRunMax", max(_run), "largest (pp)")
+M("HWMeanMin", min(_mean), "CPU minus GPU, three-seed mean per model and split: smallest (pp)"); M("HWMeanMax", max(_mean), "largest (pp)")
+# Table 6 with early stopping (G19 R1, CPU): per-seed change from the CPU P* run, mean over seeds, as tab_factors
+_es = {}
+for m in ("11", "7"):
+    P = [L19("G19", f"G19_Pstar_multi_{m}_{s}_es") for s in SEEDS]
+    for c in ("no_clean", "no_sni", "no_norm", "interaction"):
+        if (m, c) == ("7", "no_norm"): continue
+        A = [L19("G19", f"G19_{c}_multi_{m}_{s}_es") for s in SEEDS]
+        _es[(m, c)] = [100 * (mf1(a["t"], a["p"]) - mf1(b["t"], b["p"])) for a, b in zip(A, P)]
+    _es[(m, "Pstar")] = stats(P)[0]
+facts["v38_table6_early_stopping_cpu"] = {f"{m}|{c}": (round(v, 2) if isinstance(v, float) else [round(x, 2) for x in v]) for (m, c), v in _es.items()}
+for c, nm in (("no_clean", "Clean"), ("no_sni", "SNI"), ("no_norm", "Norm"), ("interaction", "Inter")):
+    v = float(np.mean(_es[("11", c)])); assert abs(v) < ladder[("Fu", "leak")][2] / 2  # prose: well below the flow-random inflation
+    assert abs(v) > abs(float(np.mean(facts[f"factor_{c}_11"])))  # prose: larger than at 30 epochs
+    M(f"F{nm}FuES", v, f"Fusion, early stopping (CPU): {c} minus P* (pp, mean of seeds)")
+assert float(np.mean(_es[("11", "no_sni")])) > 0 and float(np.mean(_es[("11", "interaction")])) > 0  # prose writes "+"
+assert float(np.mean(_es[("11", "no_clean")])) < 0 and float(np.mean(_es[("11", "no_norm")])) < 0
+assert _es[("7", "Pstar")] - float(facts["PStrat"]["value"]) < 5  # prose: near chance
+M("PBytesES", _es[("7", "Pstar")], "P* macro-F1, bytes-only CNN, early stopping (CPU, %)")
+facts["v38_g19"] = v38
+# ---------------------------------------------------------------- v3.10 (11-22, after BlockSys peer review)
+# (a) Upgrade tab_factors.tex to display both planned 30-epoch and CPU early-stopping columns for Fusion and Bytes CNN;
+# (b) Per-session size and recall/confusion breakdown of class email under file-grouped vs P* splits;
+# (c) Per-class check of Flow-random five-tuple-exposed vs non-exposed RF accuracy.
+for c, nm in (("no_clean", "Clean"), ("no_sni", "SNI"), ("interaction", "Inter")):
+    vb = float(np.mean(_es[("7", c)])); assert vb > 0, (c, vb)
+    M(f"F{nm}BytesES", vb, f"Bytes CNN, early stopping (CPU): {c} minus P* (pp, mean of seeds)")
+L = ["\\begin{tabular}{lccccc}", "\\toprule",
+     " & & \\multicolumn{2}{c}{Fusion} & \\multicolumn{2}{c}{Bytes CNN} \\\\",
+     "\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}",
+     "Change from P* & RF (len+IAT) & 30 ep. & Early stop$^\\P$ & 30 ep. & Early stop$^\\P$ \\\\", "\\midrule"]
+for c, lab in FAC:
+    pts, rngs = [], []
+    for m, bud in (("RF_seq_iat", "30"), ("11", "30"), ("11", "es"), ("7", "30"), ("7", "es")):
+        if (c, m) in (("no_sni", "RF_seq_iat"), ("no_norm", "RF_seq_iat"), ("no_norm", "7")):
+            pts.append("n/a$^\\S$"); rngs.append(""); continue
+        d = _fac30[(c, m)] if bud == "30" else _es[(m, c)]
+        pts.append(sg(float(np.mean(d))))
+        rngs.append(f"[{sg(min(d))}, {sg(max(d))}]")
+    L.append(f"{lab} & " + " & ".join(pts) + " \\\\")
+    L.append(" & " + " & ".join(rngs) + " \\\\[1pt]")
+L += ["\\bottomrule", "\\end{tabular}"]
+open(f"{OUT}/tab_factors.tex", "w").write("\n".join(L) + "\n")
+
+VOIP = classes.index("voip")
+_em_mask = ref["t"] == EMAIL
+_em_sizes = sorted(int(np.sum(_em_mask & (ref["grp"] == g))) for g in np.unique(ref["grp"][_em_mask]))
+assert len(_em_sizes) == 2 and sum(_em_sizes) == sess["email"]["flows"]
+M("NEmailFlows", sess["email"]["flows"], "cleaned flows in class email", "{:d}")
+M("NEmailSessSmall", _em_sizes[0], "flows in the smaller suffix session of email", "{:d}")
+M("NEmailSessLarge", _em_sizes[1], "flows in the larger suffix session of email", "{:d}")
+def _em_stats(runs):
+    tps = [int(np.sum((r["t"] == EMAIL) & (r["p"] == EMAIL))) for r in runs]
+    fps = [int(np.sum((r["t"] != EMAIL) & (r["p"] == EMAIL))) for r in runs]
+    fns = [int(np.sum((r["t"] == EMAIL) & (r["p"] != EMAIL))) for r in runs]
+    rec = float(np.mean([100 * tp / (tp + fn) for tp, fn in zip(tps, fns)]))
+    prec = float(np.mean([100 * tp / (tp + fp) if (tp + fp) else 0.0 for tp, fp in zip(tps, fps)]))
+    to_voip = float(np.mean([100 * np.sum((r["t"] == EMAIL) & (r["p"] == VOIP)) / np.sum(r["t"] == EMAIL) for r in runs]))
+    return dict(tps=tps, rec=rec, prec=prec, to_voip=to_voip)
+_em_file_rf = _em_stats(runs_of("RF", "no_session"))
+_em_p_rf = _em_stats(runs_of("RF", "Pstar"))
+_em_p_fu = _em_stats(runs_of("Fu", "Pstar"))
+_em_p_cn = _em_stats(runs_of("Cn", "Pstar"))
+assert max(_em_p_rf["tps"]) <= 1 and _em_p_rf["to_voip"] > 80 and _em_file_rf["rec"] > 75
+assert _em_p_fu["rec"] > 35 and _em_p_cn["rec"] > 40 and _em_p_fu["prec"] > 70 and _em_p_cn["prec"] > 75
+M("EmailRecFileRF", _em_file_rf["rec"], "RF recall on email under file-grouped splits (%)")
+M("EmailRecPRF", _em_p_rf["rec"], "RF recall on email under suffix-session splits P* (%)")
+M("EmailMaxTPPRF", max(_em_p_rf["tps"]), "maximum email true positives in any single P* seed for RF", "{:d}")
+M("EmailToVoipPRF", _em_p_rf["to_voip"], "share of email flows predicted as voip by RF under P* (%)")
+M("EmailRecPFu", _em_p_fu["rec"], "Fusion (early stopping) recall on email under P* (%)")
+M("EmailRecPCn", _em_p_cn["rec"], "1D-CNN (early stopping) recall on email under P* (%)")
+M("EmailPrecPFu", _em_p_fu["prec"], "Fusion (early stopping) precision on email under P* (%)")
+M("EmailPrecPCn", _em_p_cn["prec"], "1D-CNN (early stopping) precision on email under P* (%)")
+facts["v310_email_diag"] = dict(file_rf=_em_file_rf, pstar_rf=_em_p_rf, pstar_fu=_em_p_fu, pstar_cn=_em_p_cn, session_flows=_em_sizes)
+
+_ex_leak_cls = [x for x in json.load(open(f"{AUD}/near_duplicate_exposure_summary.json"))
+                if x["condition"] == "leak" and x["definition"] == "same_connection" and x["class"] in classes]
+assert len(_ex_leak_cls) == len(classes)
+_n_unexp_hi = sum(x["unexposed_accuracy"]["mean"] > x["exposed_accuracy"]["mean"] for x in _ex_leak_cls)
+assert _n_unexp_hi == 5
+M("NFlowUnexpHigher", _n_unexp_hi, "classes in which Flow-random RF accuracy is higher on non-exposed than five-tuple-exposed test flows", "{:d}")
+facts["v310_flow_exposure_by_class"] = {x["class"]: dict(rate=round(100 * x["any_exposure_rate"]["mean"], 2),
+                                                         exp_acc=round(100 * x["exposed_accuracy"]["mean"], 2),
+                                                         unexp_acc=round(100 * x["unexposed_accuracy"]["mean"], 2)) for x in _ex_leak_cls}
+
 open(f"{OUT}/numbers.tex", "w").write("% generated by build/make_numbers.py -- do not edit\n" + "\n".join(macros) + "\n")
 json.dump(facts, open(f"{OUT}/facts.json", "w"), indent=1, ensure_ascii=False)
 print(len(macros), "macros;", "tables:", sorted(os.path.basename(p) for p in glob.glob(f"{OUT}/tab_*.tex")))

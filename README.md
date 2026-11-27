@@ -5,11 +5,11 @@ Encrypted-Traffic Model Comparisons* (under review).
 
 This repository lets readers check the paper's numbers without the raw captures. It contains:
 
-- the file-to-session manifest of all 140 ISCXVPN2016 capture files;
-- the pair-level evidence of the sibling-capture audit;
-- the final train/validation/test index arrays of every split;
-- the per-flow predictions and run records of every model run the paper uses;
-- the scripts that regenerate every table, confidence interval, and number in the text.
+- the file-to-session manifest of all 140 ISCXVPN2016 capture files and suffix-session-to-application mapping;
+- the pair-level evidence of the sibling-capture audit (130 candidate pairs and all 9,730 file pairs);
+- the final train/validation/test index arrays of every split (including the all-pairs evidence split);
+- the per-flow predictions and run records of every model run the paper uses (G01–G06 and CPU/all-pairs reruns G19);
+- the scripts that regenerate every table, confidence interval, number in the text, and all four paper figures (`figures/`).
 
 It does **not** contain raw packets, payload bytes, flow features, IP addresses, or ports. Five-tuples appear only as
 counts; the salt of the HMAC used to join connections during the audit is not released.
@@ -44,16 +44,30 @@ E3 groups with 10,000 resamples and a fixed seed, so its intervals are reproduce
 ## Layout
 
 ```
-manifest/   files.csv, sibling_pairs.csv, evidence_sessions.json, E2/E3_file_to_group.csv
-runs/G01..G06/
+manifest/   files.csv, sibling_pairs.csv, evidence_sessions.json, evidence_sessions_allpairs.json,
+            E2/E3_file_to_group.csv, session_app_map.csv
+runs/G01..G06, G18, G19/
             results/   per-flow predictions (*_predictions.csv.gz) and a run record (*.json) per run
             data/splits, results/*_splits.npz   train/validation/test indices
-            audit/     row manifests, per-fold class coverage, near-duplicate exposure per test flow
+            audit/     row manifests, per-fold class coverage, near-duplicate exposure, all-pairs audit (G18)
 analysis/   the scripts above (paths relative to the repository root)
+figures/    figstyle.py and the four scripts that regenerate Figs. 1–4 from outputs/ (or expected/) and manifest/
 expected/   the outputs used to build the paper
-records/    the audit, G05 and G06 rules (Chinese originals), the G05 protocol, G06 split checks, environment and package versions
-pipeline/   the server-side scripts that extracted flows, ran the audit and trained the models (for inspection only;
+records/    the audit, G05 and G06 rules (Chinese originals), the G05 protocol, G06 split checks, environment and package versions (including G18/G19)
+pipeline/   the server-side scripts that extracted flows, ran the audits (G01, G18) and trained the models (for inspection only;
             they need the raw ISCXVPN2016 captures and the local configuration, which are not included)
+```
+
+### Regenerating figures
+
+The four paper figures (`figures/out/fig_{E,C,A,D}.pdf`) require `matplotlib`, `pillow`, and `poppler-utils` (`pdffonts`, `pdfinfo`, `pdftoppm`, `pdftocairo`). Set `ARIMO_FONT_DIR` to a directory containing the Arimo TrueType files to match the paper's exact font; otherwise `figstyle.py` falls back to DejaVu Sans.
+
+```bash
+cd figures
+python make_fig_E_audit_and_splits.py
+python make_fig_C_perclass_heatmap.py
+python make_fig_A_ladder_lead.py
+python make_fig_D_rank_focus.py
 ```
 
 ### Manifest
@@ -155,6 +169,8 @@ that its split arrays equal those of the official 1.9.1 splitter.
 | G01 / G02 `leak` | Flow-random results (StratifiedKFold, not affected by the defect) |
 | G01, G03, G04 grouped | Superseded; included only for the old-splitter comparison in the paper and for the consistency checks |
 | G06 | Added after a third review: RF retrained on all training flows of each fold (validation sessions included; Section 5.3), and timing and container metadata of the identical frames in the 13 sibling pairs (`runs/G06/audit/packet_pairs/`; Section 3) |
+| G18 | Post-hoc all-pairs audit over all 9,730 file pairs (`runs/G18/audit/G18_all_pairs.csv.gz` and `evidence_sessions_allpairs.json`; Section 5.6) |
+| G19 | Post-hoc CPU reruns on identical folds: hardware check (12 early-stopped deep runs on P\* and evidence), Table 3 early-stopping columns (Fusion and bytes CNN), and all-pairs evidence retraining (`G19all`, Sections 4, 5.5, 5.6) |
 
 ### Records
 
